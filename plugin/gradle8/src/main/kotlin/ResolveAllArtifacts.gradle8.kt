@@ -23,13 +23,12 @@ abstract class ResolveProjectDependenciesTaskG8
     ) : ResolveProjectDependenciesTask() {
         private val artifactFiles = Cached.of { artifactFiles() }
 
-        private fun artifactFiles(): FileCollection {
-            return objects.fileCollection().from(
+        private fun artifactFiles(): FileCollection =
+            objects.fileCollection().from(
                 getReportableConfigurations().map { configuration ->
                     configuration.artifactFiles()
                 },
             )
-        }
 
         @TaskAction
         fun action() {

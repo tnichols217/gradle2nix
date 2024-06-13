@@ -38,14 +38,15 @@ abstract class AbstractResolveAllArtifactsApplier : ResolveAllArtifactsApplier {
 
 abstract class ResolveProjectDependenciesTask : DefaultTask() {
     @Internal
-    protected fun getReportableConfigurations(): List<Configuration> {
-        return project.configurations.filter { (it as? DeprecatableConfiguration)?.canSafelyBeResolved() ?: true }
-    }
+    protected fun getReportableConfigurations(): List<Configuration> =
+        project.configurations.filter {
+            (it as? DeprecatableConfiguration)?.canSafelyBeResolved() ?: true
+        }
 
-    protected fun Configuration.artifactFiles(): FileCollection {
-        return incoming.artifactView { viewConfiguration ->
-            viewConfiguration.isLenient = true
-            viewConfiguration.componentFilter { it is ModuleComponentIdentifier }
-        }.files
-    }
+    protected fun Configuration.artifactFiles(): FileCollection =
+        incoming
+            .artifactView { viewConfiguration ->
+                viewConfiguration.isLenient = true
+                viewConfiguration.componentFilter { it is ModuleComponentIdentifier }
+            }.files
 }

@@ -47,9 +47,7 @@ private val json =
 
 val testLogger = Logger(logLevel = LogLevel.DEBUG, stacktrace = true)
 
-fun fixture(path: String): File {
-    return Paths.get("../fixtures", path).toFile()
-}
+fun fixture(path: String): File = Paths.get("../fixtures", path).toFile()
 
 @OptIn(ExperimentalKotest::class, ExperimentalSerializationApi::class, KotestInternal::class)
 suspend fun TestScope.fixture(
@@ -60,7 +58,8 @@ suspend fun TestScope.fixture(
     val tmp = Paths.get("build/tmp/gradle2nix").apply { toFile().mkdirs() }
     val baseDir = Paths.get("../fixtures/projects", project).toFile()
     val children =
-        baseDir.listFiles(FileFilter { it.isDirectory && (it.name == "groovy" || it.name == "kotlin") })
+        baseDir
+            .listFiles(FileFilter { it.isDirectory && (it.name == "groovy" || it.name == "kotlin") })
             ?.toList()
     val cases =
         if (children.isNullOrEmpty()) {
@@ -175,8 +174,8 @@ object MavenRepo : MountableExtension<MavenRepo.Config, NettyApplicationEngine>,
         return tryStart(3).also { this.server = it }
     }
 
-    private fun tryStart(attempts: Int): NettyApplicationEngine {
-        return try {
+    private fun tryStart(attempts: Int): NettyApplicationEngine =
+        try {
             val p = config.port ?: Random.nextInt(10000, 65000)
             val s =
                 embeddedServer(Netty, port = p, host = config.host) {
@@ -202,7 +201,6 @@ object MavenRepo : MountableExtension<MavenRepo.Config, NettyApplicationEngine>,
         } catch (e: Throwable) {
             if (config.port == null && attempts > 0) tryStart(attempts - 1) else throw e
         }
-    }
 
     override suspend fun afterSpec(spec: Spec) {
         server?.stop()

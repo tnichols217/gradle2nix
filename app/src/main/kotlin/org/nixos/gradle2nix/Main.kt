@@ -48,13 +48,19 @@ val JsonFormat =
     }
 
 sealed interface GradleSource {
-    data class Distribution(val uri: URI) : GradleSource
+    data class Distribution(
+        val uri: URI,
+    ) : GradleSource
 
-    data class Path(val path: File) : GradleSource
+    data class Path(
+        val path: File,
+    ) : GradleSource
 
     data object Project : GradleSource
 
-    data class Wrapper(val version: String) : GradleSource
+    data class Wrapper(
+        val version: String,
+    ) : GradleSource
 }
 
 enum class LogLevel {
@@ -64,9 +70,10 @@ enum class LogLevel {
     ERROR,
 }
 
-class Gradle2Nix : CliktCommand(
-    name = "gradle2nix",
-) {
+class Gradle2Nix :
+    CliktCommand(
+        name = "gradle2nix",
+    ) {
     private val tasks: List<String> by option(
         "--task",
         "-t",
@@ -93,8 +100,7 @@ class Gradle2Nix : CliktCommand(
         "-o",
         metavar = "DIR",
         help = "Path to write generated files",
-    )
-        .file(canBeFile = false, canBeDir = true)
+    ).file(canBeFile = false, canBeDir = true)
         .defaultLazy("<project>") { projectDir }
 
     internal val lockFile: String by option(
@@ -133,8 +139,7 @@ class Gradle2Nix : CliktCommand(
     private val logLevel: LogLevel by option(
         "--log",
         help = "Print messages with this priority or higher",
-    )
-        .enum<LogLevel>(key = { it.name.lowercase() })
+    ).enum<LogLevel>(key = { it.name.lowercase() })
         .default(LogLevel.INFO, "info")
 
     private val dumpEvents: Boolean by option(
@@ -192,7 +197,9 @@ class Gradle2Nix : CliktCommand(
                         addAll(root.editableBuilds)
                     }
                 builds.mapNotNull { build ->
-                    build.rootProject.projectDirectory.resolve("buildSrc").takeIf { it.exists() }
+                    build.rootProject.projectDirectory
+                        .resolve("buildSrc")
+                        .takeIf { it.exists() }
                 }
             }
 

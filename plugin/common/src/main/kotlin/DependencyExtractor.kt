@@ -116,22 +116,27 @@ private fun cachedComponentId(file: File): DependencyCoordinates? {
     val parts = file.invariantSeparatorsPath.split('/')
     if (parts.size < 6) return null
     if (parts[parts.size - 6] != "files-2.1") return null
-    return parts.dropLast(2).takeLast(3).joinToString(":").let(DefaultDependencyCoordinates::parse)
+    return parts
+        .dropLast(2)
+        .takeLast(3)
+        .joinToString(":")
+        .let(DefaultDependencyCoordinates::parse)
 }
 
 @OptIn(ExperimentalSerializationApi::class)
 private fun parseFileMappings(file: File): Map<String, String>? =
     try {
-        Json.decodeFromStream<JsonObject>(file.inputStream())
-            .jsonObject["variants"]?.jsonArray
+        Json
+            .decodeFromStream<JsonObject>(file.inputStream())
+            .jsonObject["variants"]
+            ?.jsonArray
             ?.flatMap { it.jsonObject["files"]?.jsonArray ?: emptyList() }
             ?.map { it.jsonObject }
             ?.mapNotNull {
                 val name = it["name"]?.jsonPrimitive?.content ?: return@mapNotNull null
                 val url = it["url"]?.jsonPrimitive?.content ?: return@mapNotNull null
                 if (name != url) name to url else null
-            }
-            ?.toMap()
+            }?.toMap()
             ?.takeUnless { it.isEmpty() }
     } catch (e: Throwable) {
         null

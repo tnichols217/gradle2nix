@@ -20,15 +20,15 @@
         inherit (nixpkgs) lib;
       in
       {
-        builders = rec {
-          buildMavenRepo = pkgs.callPackage ./maven-repo.nix { };
-          buildGradlePackage = pkgs.callPackage ./gradle.nix { inherit buildMavenRepo; };
-          default = buildGradlePackage;
+        builders = {
+          inherit (self.packages.${system}.gradle2nix) buildGradlePackage buildMavenRepo;
+          default = self.packages.${system}.buildGradlePackage;
         };
 
-        packages = rec {
+        packages = {
+          inherit (self.packages.${system}.gradle2nix) gradleSetupHook;
           gradle2nix = pkgs.callPackage ./default.nix { };
-          default = gradle2nix;
+          default = self.packages.${system}.gradle2nix;
         };
 
         apps = rec {

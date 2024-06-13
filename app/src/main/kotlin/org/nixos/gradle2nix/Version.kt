@@ -2,7 +2,11 @@ package org.nixos.gradle2nix
 
 import java.util.concurrent.ConcurrentHashMap
 
-class Version(val source: String, val parts: List<String>, base: Version?) : Comparable<Version> {
+class Version(
+    val source: String,
+    val parts: List<String>,
+    base: Version?,
+) : Comparable<Version> {
     private val base: Version
     val numericParts: List<Long?>
 

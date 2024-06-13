@@ -17,11 +17,10 @@ class DependencySetModelBuilder(
     override fun buildAll(
         modelName: String,
         project: Project,
-    ): DependencySet {
-        return dependencyExtractor.buildDependencySet(
+    ): DependencySet =
+        dependencyExtractor.buildDependencySet(
             cacheAccess,
             checksumService,
             fileStoreAndIndexProvider,
         )
-    }
 }

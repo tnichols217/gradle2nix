@@ -5,9 +5,16 @@
 with pkgs;
 
 let
-  buildMavenRepo = callPackage ./maven-repo.nix { };
+  buildMavenRepo = callPackage ./nix/build-maven-repo.nix { };
 
-  buildGradlePackage = callPackage ./gradle.nix { inherit buildMavenRepo; };
+  gradleSetupHook = makeSetupHook {
+    name = "gradle-setup-hook";
+    propagatedBuildInputs = [ gradle ];
+  } ./nix/setup-hook.sh;
+
+  buildGradlePackage = callPackage ./nix/build-gradle-package.nix {
+    inherit buildMavenRepo gradleSetupHook;
+  };
 
   gradle2nix = buildGradlePackage {
     pname = "gradle2nix";
@@ -30,9 +37,9 @@ let
       };
     };
 
-    gradleFlags = [ "installDist" ];
+    gradleInstallFlags = [ ":app:installDist" ];
 
-    installPhase = ''
+    postInstall = ''
       mkdir -p $out/{bin,/lib/gradle2nix}
       cp -r app/build/install/gradle2nix/* $out/lib/gradle2nix/
       rm $out/lib/gradle2nix/bin/gradle2nix.bat
@@ -40,7 +47,7 @@ let
     '';
 
     passthru = {
-      inherit buildGradlePackage buildMavenRepo;
+      inherit buildGradlePackage buildMavenRepo gradleSetupHook;
     };
 
     meta = with lib; {

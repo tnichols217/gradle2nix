@@ -18,12 +18,14 @@ object DependencyExtractorApplierG8 : DependencyExtractorApplier {
         extractor: DependencyExtractor,
     ) {
         val serviceProvider =
-            gradle.sharedServices.registerIfAbsent(
-                "nixDependencyExtractor",
-                DependencyExtractorService::class.java,
-            ) {}.map { service ->
-                service.apply { this.extractor = extractor }
-            }
+            gradle.sharedServices
+                .registerIfAbsent(
+                    "nixDependencyExtractor",
+                    DependencyExtractorService::class.java,
+                ) {}
+                .map { service ->
+                    service.apply { this.extractor = extractor }
+                }
 
         gradle.service<BuildEventListenerRegistryInternal>().onOperationCompletion(serviceProvider)
     }
@@ -31,7 +33,9 @@ object DependencyExtractorApplierG8 : DependencyExtractorApplier {
 
 @Suppress("UnstableApiUsage")
 internal abstract class DependencyExtractorService :
-    BuildService<BuildServiceParameters.None>, BuildOperationListener, AutoCloseable {
+    BuildService<BuildServiceParameters.None>,
+    BuildOperationListener,
+    AutoCloseable {
     var extractor: DependencyExtractor? = null
 
     override fun started(

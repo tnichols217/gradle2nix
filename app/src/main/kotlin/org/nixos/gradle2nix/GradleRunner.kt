@@ -16,7 +16,8 @@ fun connect(
     config: Config,
     projectDir: File = config.projectDir,
 ): ProjectConnection =
-    GradleConnector.newConnector()
+    GradleConnector
+        .newConnector()
         .apply {
             when (val source = config.gradleSource) {
                 is GradleSource.Distribution -> useDistribution(source.uri)
@@ -24,8 +25,7 @@ fun connect(
                 GradleSource.Project -> useBuildDistribution()
                 is GradleSource.Wrapper -> useGradleVersion(source.version)
             }
-        }
-        .forProjectDirectory(projectDir)
+        }.forProjectDirectory(projectDir)
         .connect()
 
 suspend fun ProjectConnection.buildModel(): GradleBuild =
@@ -67,8 +67,7 @@ suspend fun ProjectConnection.build(
                 "--refresh-dependencies",
                 "--gradle-user-home=${config.gradleHome}",
                 "--init-script=${config.appHome}/init.gradle",
-            )
-            .apply {
+            ).apply {
                 if (config.logger.stacktrace) {
                     addArguments("--stacktrace")
                 }
@@ -80,12 +79,14 @@ suspend fun ProjectConnection.build(
                     withSystemProperties(
                         mapOf(
                             "org.gradle.internal.operations.trace" to
-                                config.outDir.toPath().resolve("debug").absolutePathString(),
+                                config.outDir
+                                    .toPath()
+                                    .resolve("debug")
+                                    .absolutePathString(),
                         ),
                     )
                 }
-            }
-            .run(
+            }.run(
                 object : ResultHandler<DependencySet> {
                     override fun onComplete(result: DependencySet) {
                         continuation.resume(result)
