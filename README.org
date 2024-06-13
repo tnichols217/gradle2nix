@@ -402,7 +402,7 @@ replace it.
         jar uf aapt2.jar aapt2
         cp aapt2.jar $out
       '';
-    }
+    };
   }
   #+end_src
 
