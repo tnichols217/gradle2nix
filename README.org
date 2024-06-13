@@ -15,9 +15,9 @@ Generate [[https://nixos.org/nix/][Nix]] expressions which build
   - [[#for-packagers][For packagers]]
   - [[#specifying-the-gradle-installation][Specifying the Gradle installation]]
 - [[#reference][Reference]]
-  - [[#buildGradlePackage][=buildGradlePackage=]]
-  - [[#buildMavenRepo][=buildMavenRepo=]]
-  - [[#gradleSetupHook][=gradleSetupHook=]]
+  - [[#buildgradlepackage][buildGradlePackage]]
+  - [[#buildmavenrepo][buildMavenRepo]]
+  - [[#gradlesetuphook][gradleSetupHook]]
 - [[#contributing][Contributing]]
 - [[#license][License]]
 #+END_QUOTE
@@ -229,10 +229,10 @@ This function is a convenience wrapper around =stdenv.mkDerivation=
 that simplifies building Gradle projects with the lock files
 produced by =gradle2nix=. It performs the following:
 
-1. Applies [[#gradleSetupHook][=gradleSetupHook=]], overriding the
+1. Applies [[#gradlesetuphook][gradleSetupHook]], overriding the
   required =gradle= package if specified.
 2. Builds the offline Maven repository with
-  [[#buildMavenRepo][=buildMavenRepo=]].
+  [[#buildmavenrepo][buildMavenRepo]].
 3. Sets the JDK used to run Gradle if specified.
 4. Applies the offline repo to the Gradle build using an
   initialization script.
@@ -261,7 +261,7 @@ produced by =gradle2nix=. It performs the following:
 In addition, this function accepts:
 - All arguments to =stdenv.mkDerivation=.
 - Arguments specific to =gradleSetupHook= (see
-  [[#gradleSetupHook][below]]).
+  [[#gradlesetuphook][below]]).
 
 *** =buildMavenRepo=
 
