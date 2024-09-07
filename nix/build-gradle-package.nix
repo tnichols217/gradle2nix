@@ -11,6 +11,7 @@
   lockFile ? null,
   # The Gradle package to use. Default is 'pkgs.gradle'.
   gradle ? null,
+  extraGradleFlags ? [],
   # Override the default JDK used to run Gradle itself.
   buildJdk ? null,
   # Override functions which fetch dependency artifacts.
@@ -102,8 +103,9 @@ let
       nativeBuildInputs = (args.nativeBuildInputs or [ ]) ++ [ finalAttrs.gradleSetupHook ];
 
       gradleFlags =
-        [ "--console=plain" ]
-        ++ lib.optional (finalAttrs.buildJdk != null) "-Dorg.gradle.java.home=${finalAttrs.buildJdk.home}";
+        # [ "--console=plain" ] ++
+        extraGradleFlags ++
+        lib.optional (finalAttrs.buildJdk != null) "-Dorg.gradle.java.home=${finalAttrs.buildJdk.home}";
 
       passthru =
         lib.optionalAttrs (offlineRepo != null) { inherit offlineRepo; } // (args.passthru or { });
