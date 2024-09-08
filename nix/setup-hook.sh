@@ -50,7 +50,9 @@ gradleBuildPhase() {
         fi
 
         echoCmd 'gradleBuildPhase flags' "${flagsArray[@]}"
-
+        echo $gradleBuildFlags;
+        echo $gradleBuildFlagsArray;
+        which gradle;
         gradle "${flagsArray[@]}"
     fi
 
